@@ -30,7 +30,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Cuby\\Smsway\\CubyBaseProvider"
+                "Cuby\\Smsway\\SmswayProvider"
             ]
         }
     }
