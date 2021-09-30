@@ -1,6 +1,6 @@
 {
-    "name": "cuby/meteorsis",
-    "description": "Meteorsis API implementation",
+    "name": "cuby/smsway",
+    "description": "Smsway API implementation",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -12,12 +12,12 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Cuby\\Meteorsis\\": "src"
+            "Cuby\\Smsway\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Cuby\\Meteorsis\\Tests\\": "tests"
+            "Cuby\\Smsway\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -30,7 +30,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Cuby\\Meteorsis\\CubyBaseProvider"
+                "Cuby\\Smsway\\CubyBaseProvider"
             ]
         }
     }
