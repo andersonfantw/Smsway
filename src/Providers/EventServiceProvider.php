@@ -1,20 +1,20 @@
 <?php
 
-namespace Cuby\Meteorsis\Providers;
+namespace Cuby\Smsway\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
-use Cuby\Meteorsis\Events\MeteorsisCallbackEvent;
-use Cuby\Meteorsis\Events\MeteorsisGetAccountBalanceEvent;
-use Cuby\Meteorsis\Events\MeteorsisGetServerQueryEvent;
-use Cuby\Meteorsis\Events\MeteorsisGetSMSStatusEvent;
-use Cuby\Meteorsis\Events\MeteorsisSendSMSEvent;
-use Cuby\Meteorsis\Listeners\MeteorsisCallbackNotification;
-use Cuby\Meteorsis\Listeners\MeteorsisGetAccountBalanceNotification;
-use Cuby\Meteorsis\Listeners\MeteorsisGetServerQueryNotification;
-use Cuby\Meteorsis\Listeners\MeteorsisGetSMSStatusNotification;
-use Cuby\Meteorsis\Listeners\MeteorsisSendSMSNotification;
+use Cuby\Smsway\Events\SmswayCallbackEvent;
+use Cuby\Smsway\Events\SmswayGetAccountBalanceEvent;
+use Cuby\Smsway\Events\SmswayGetServerQueryEvent;
+use Cuby\Smsway\Events\SmswayGetSMSStatusEvent;
+use Cuby\Smsway\Events\SmswaySendSMSEvent;
+use Cuby\Smsway\Listeners\SmswayCallbackNotification;
+use Cuby\Smsway\Listeners\SmswayGetAccountBalanceNotification;
+use Cuby\Smsway\Listeners\SmswayGetServerQueryNotification;
+use Cuby\Smsway\Listeners\SmswayGetSMSStatusNotification;
+use Cuby\Smsway\Listeners\SmswaySendSMSNotification;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -24,20 +24,20 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        MeteorsisCallbackEvent::class => [
-            MeteorsisCallbackNotification::class
+        SmswayCallbackEvent::class => [
+            SmswayCallbackNotification::class
         ],
-        MeteorsisGetAccountBalanceEvent::class => [
-            MeteorsisGetAccountBalanceNotification::class
+        SmswayGetAccountBalanceEvent::class => [
+            SmswayGetAccountBalanceNotification::class
         ],
-        MeteorsisGetServerQueryEvent::class => [
-            MeteorsisGetServerQueryNotification::class
+        SmswayGetServerQueryEvent::class => [
+            SmswayGetServerQueryNotification::class
         ],
-        MeteorsisGetSMSStatusEvent::class => [
-            MeteorsisGetSMSStatusNotification::class
+        SmswayGetSMSStatusEvent::class => [
+            SmswayGetSMSStatusNotification::class
         ],
-        MeteorsisSendSMSEvent::class => [
-            MeteorsisSendSMSNotification::class
+        SmswaySendSMSEvent::class => [
+            SmswaySendSMSNotification::class
         ],
     ];
 
