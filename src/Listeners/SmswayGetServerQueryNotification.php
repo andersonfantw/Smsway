@@ -28,6 +28,6 @@ class SmswayGetServerQueryNotification
     public function handle(SmswayGetServerQueryEvent $event)
     {
         //$this->queue
-        Log::alert(springf('[%s][%s]%s - %s. %s',datetime('Y-m-d H:i:s'), $event->sender, 'Smsway Get Server Query', sprintf('Smsway簡訊截至目前有 %s 個排程',$event->queue), ''));
+        Log::alert(sprintf('[%s][%s]%s - %s. %s',date('Y-m-d H:i:s'), $event->sender, 'Smsway Get Server Query', sprintf('Smsway簡訊截至目前有 %s 個排程',$event->queue), ''));
     }
 }

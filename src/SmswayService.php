@@ -46,8 +46,8 @@ class SmswayService extends SMSAbstract implements SMSInterface
         $this->maxWords = config('Smsway.max_words');
 
         $this->base_param_table = [
-            'username' => config('services.Smsway.key'),
-            'password' => config('services.Smsway.secret'),
+            'apiAccount' => config('services.Smsway.key'),
+            'secretKey' => config('services.Smsway.secret'),
         ];
 
         // 驗證條件
@@ -142,14 +142,15 @@ class SmswayService extends SMSAbstract implements SMSInterface
     public function send(SmswayMessage $message): array
     {
         $this->base_param_table['mobiles'] = implode(',',$message->recipients);
-        $this->base_param_table['sendTime'] = $message->dos;
         $this->base_param_table['content'] = $message->content;
+        $this->base_param_table['sendTime'] = $message->dos??'';
+        $this->base_param_table['subPort'] = '';
 
         $result = $this->queryServer('send_sms');
-        if(array_key_exists('data',$result)){
+        if(($result['data']??'')!=''){
             event(new SmswaySendSMSEvent('SmswayService',$result['data']));
         }
-        
+
         return $result;
     }
 
@@ -192,12 +193,12 @@ class SmswayService extends SMSAbstract implements SMSInterface
 
     public function queryServer(String $url_name): array
     {
-        Http::timeout(10)->post([
-            
-        ]);
-        $reponse = Http::timeout(10)->get(
-            $this->functions[$url_name]['url'],
-            $this->validator_inputs($this->base_param_table, $this->functions[$url_name]['query'])              
+        $reponse = Http::withHeaders([
+            'Accept-Charset'=>'charset=utf-8',
+        ])->asForm()->acceptJson()->post($this->functions[$url_name]['url'],
+            array_filter($this->validator_inputs($this->base_param_table, $this->functions[$url_name]['query']),
+                function($v){return $v!='';}
+            )
         );
         return $this->parseReturn($reponse->body());
     }
@@ -209,78 +210,29 @@ class SmswayService extends SMSAbstract implements SMSInterface
      */
     public function parseReturn(String $response): array
     {
-        $arr = [];
-        $a = explode(';',$response);
-        foreach($a as $r){
-            $a1 = explode(':', $r);
-            $arr[$a1[0]] = $a1[1];
-        }
-        if(array_key_exists('STATUS',$arr)){
-            //$sms_status[$arr['STATUS']]
-            if(in_array($arr['STATUS'],[1])){
-                event(new SystemErrorEvent(
-                    __CLASS__,
-                    $this->sms_status[$arr['STATUS']]['status'],
-                    $this->sms_status[$arr['STATUS']]['desc'],
-                    ''
-                ));
-            }
-            if(in_array($arr['STATUS'],[19,20,21])){
-                event(new SystemWarningEvent(
-                    __CLASS__,
-                    $this->sms_status[$arr['STATUS']]['status'],
-                    $this->sms_status[$arr['STATUS']]['desc'],
-                    ''
-                ));
-            }
-        }
-        if(array_key_exists('ERRORCODE',$arr)){
-            if($arr['ERRORCODE']!='300'){
-                //$sms_status_err_code[$arr['ERRORCODE']]
-                if(in_array($arr['ERRORCODE'],[308])){
-                    event(new SystemCriticalEvent(
-                        __CLASS__,
-                        $this->sms_status_err_code[$arr['ERRORCODE']],
-                        $this->sms_status_err_code[$arr['ERRORCODE']],
-                        ''
-                    ));
-                }
-                if(in_array($arr['ERRORCODE'],[301,302,303,304,305,306,307,309,312,315,326])){
-                    event(new SystemWarningEvent(
-                        __CLASS__,
-                        $this->sms_status_err_code[$arr['ERRORCODE']],
-                        $this->sms_status_err_code[$arr['ERRORCODE']],
-                        ''
-                    ));
-                }
-            }
-        }
-        if(array_key_exists('ERROR',$arr)){
-            //$api_err_code
-            if(in_array($arr['ERROR'],[1,2,3,16])){
-                event(new SystemCriticalEvent(
-                    __CLASS__,
-                    $this->api_err_code[$arr['ERROR']],
-                    $this->api_err_code[$arr['ERROR']],
-                    ''
-                ));
-            }
-            if(in_array($arr['ERROR'],[20,240,241,242,243,244,245,246,248,249])){
-                event(new SystemErrorEvent(
-                    __CLASS__,
-                    $this->api_err_code[$arr['ERROR']],
-                    $this->api_err_code[$arr['ERROR']],
-                    ''
-                ));
-            }
-            if(in_array($arr['ERROR'],[5,6,8,9,17,18])){
-                event(new SystemWarningEvent(
-                    __CLASS__,
-                    $this->api_err_code[$arr['ERROR']],
-                    $this->api_err_code[$arr['ERROR']],
-                    ''
-                ));
-            }
+        $arr = json_decode($response, true);
+        if(in_array($arr['status'],[24,99])){
+            event(new SystemCriticalEvent(
+                __CLASS__,
+                '[Smsway]',
+                $this->api_err_code[$arr['status']],
+                ''
+            ));
+        }elseif(in_array($arr['status'],[22,23,25,27,97,98])){
+            event(new SystemErrorEvent(
+                __CLASS__,
+                '[Smsway]',
+                $this->api_err_code[$arr['status']],
+                ''
+            ));
+        }elseif(in_array($arr['status'],[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,26,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96])){
+            event(new SystemWarningEvent(
+                __CLASS__,
+                '[Smsway]',
+                $this->api_err_code[$arr['status']],
+                ''
+            ));
+
         }
         return $arr;
     }

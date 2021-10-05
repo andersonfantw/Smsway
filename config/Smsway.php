@@ -4,7 +4,7 @@ return [
     'limit_per_request' => 20,
     'functions' => [
         'send_sms' => [
-            'url'=>'http://api.smsway.com.cn/api/send',
+            'url'=>'http://api.smsway.com.cn/api/send/sendsms',
             'query'=>['apiAccount','secretKey','content','mobiles','subPort','sendTime']
         ],
         'get_sms_status' => [

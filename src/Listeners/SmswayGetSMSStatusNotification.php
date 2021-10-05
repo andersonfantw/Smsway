@@ -29,8 +29,8 @@ class SmswayGetSMSStatusNotification
     {
         //$this->status
         //$this->errorcode
-        Log::alert(springf('[%s][%s]%s - %s. %s',
-            datetime('Y-m-d H:i:s'),
+        Log::alert(sprintf('[%s][%s]%s - %s. %s',
+            date('Y-m-d H:i:s'),
             $event->sender,
             'Smsway Get SMS Status',
             sprintf('Smsway簡訊代碼%s查詢status[%s] %s, errorcode[%s] %s', $event->smsdid, $event->status, $event->status_text, $event->errorcode, $event->errorcode_text),

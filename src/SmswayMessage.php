@@ -68,7 +68,7 @@ class SmswayMessage extends Notification implements ShouldQueue
                     'date',
                 ],
             ],
-            'mobile' => [
+            'recipient' => [
                 'name'=>'短訊接收者',
                 'desc'=>'國家碼 + 流動電話號碼。每一次 HTTP API 只限傳送 20 個電話號碼。',
                 'validate'=>'',
@@ -194,7 +194,7 @@ class SmswayMessage extends Notification implements ShouldQueue
             ));
         }
         if(Phone::create($recipient)->isValid()){
-            $this->recipients[] = $recipient;
+            $this->recipients[] = substr($recipient,2);
         }else{
             event(new SystemWarningEvent(
                 __CLASS__.'::'.__METHOD__,
