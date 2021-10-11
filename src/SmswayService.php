@@ -46,8 +46,8 @@ class SmswayService extends SMSAbstract implements SMSInterface
         $this->maxWords = config('Smsway.max_words');
 
         $this->base_param_table = [
-            'apiAccount' => config('services.Smsway.key'),
-            'secretKey' => config('services.Smsway.secret'),
+            'apiAccount' => config('services.smsway.key'),
+            'secretKey' => config('services.smsway.secret'),
         ];
 
         // 驗證條件
